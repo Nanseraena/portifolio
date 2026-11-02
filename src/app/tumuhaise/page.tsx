@@ -1,0 +1,111 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import {
+  siCss,
+  siDjango,
+  siJavascript,
+  siLaravel,
+  siMysql,
+  siNextdotjs,
+  siPrisma,
+  siPython,
+  siReact,
+  siSocketdotio,
+  siTailwindcss,
+  siTypescript,
+} from "simple-icons";
+import { experiences } from "@/data/experience";
+import { earlierExperience, resumeProjects, resumeSkills } from "@/data/resume";
+import ResumeActions from "./ResumeActions";
+import styles from "./resume.module.css";
+
+const technologyIcons = {
+  "Next.js": siNextdotjs,
+  TypeScript: siTypescript,
+  "React Native": siReact,
+  Django: siDjango,
+  Python: siPython,
+  Laravel: siLaravel,
+  MySQL: siMysql,
+  "Socket.IO": siSocketdotio,
+  Prisma: siPrisma,
+  Livewire: siLaravel,
+  CSS: siCss,
+  "Tailwind CSS": siTailwindcss,
+  JavaScript: siJavascript,
+} as const;
+
+const technologyFallbackIcons: Record<string, string> = {
+  AI: "ri-brain-line",
+  IoT: "ri-radar-line",
+  ML: "ri-line-chart-line",
+  SEO: "ri-search-eye-line",
+  Booking: "ri-calendar-check-line",
+  PHP: "ri-code-s-slash-line",
+};
+
+export const metadata: Metadata = {
+  title: "Nansera Ena — CV",
+  description: "CV of Nansera Ena, Software Developer based in Kampala, Uganda.",
+};
+
+export default function ResumePage() {
+  return (
+    <main className={styles.resumePage}>
+      <ResumeActions />
+      <article className={styles.resume}>
+        <header className={styles.hero}>
+          <div className={styles.heroMeta}><span>Curriculum vitae</span><span>Kampala, Uganda</span></div>
+          <h1>Nansera<br /><span>Ena</span></h1>
+          <div className={styles.heroBottom}>
+            <p>Software Developer building accessible, scalable web and mobile products.</p>
+            <div className={styles.directLinks}>
+              <a href="mailto:enanansera311@gmail.com"><i className="ri-mail-line" aria-hidden="true" />Email</a>
+              <a href="tel:+256779393684"><i className="ri-phone-line" aria-hidden="true" />+256 779 393684</a>
+              <a href="https://github.com/Nanseraena" target="_blank" rel="noreferrer"><i className="ri-github-line" aria-hidden="true" />GitHub</a>
+              <a href="https://linkedin.com/in/ena-nansera-a4bb18253" target="_blank" rel="noreferrer"><i className="ri-linkedin-line" aria-hidden="true" />LinkedIn</a>
+            </div>
+          </div>
+        </header>
+
+        <section className={styles.intro}>
+          <p className={styles.sectionNumber}>01 / Profile</p>
+          <div><h2>Building thoughtful software from a clear understanding of people and systems.</h2><p>I&apos;m a mission-driven software developer with a Bachelor&apos;s degree in Software Engineering from Makerere University. I translate Figma designs and product requirements into scalable, accessible experiences with React, Next.js, TypeScript, Django, and PostgreSQL.</p></div>
+        </section>
+
+        <section className={styles.section}>
+          <div className={styles.sectionHeading}><p>02 / Experience</p><span>{String(experiences.length).padStart(2, "0")} current chapters</span></div>
+          <div className={styles.experienceList}>
+            {experiences.map((experience) => (
+              <article className={styles.experience} key={experience.company}>
+                <span className={styles.experiencePeriod}>{experience.period}</span>
+                <div><p className={styles.experienceRole}>{experience.role}</p><h3>{experience.company}</h3></div>
+                <p className={styles.experienceText}>{experience.description}</p>
+                <ul className={styles.experienceTags}>{experience.tags.map((tag) => <li key={tag}>{tag}</li>)}</ul>
+              </article>
+            ))}
+          </div>
+          <div className={styles.earlierExperience}>
+            <p>Earlier experience</p>
+            {earlierExperience.map((experience) => <article key={experience.company}><div><h3>{experience.company}</h3><span>{experience.role}</span></div><p>{experience.text}</p></article>)}
+          </div>
+        </section>
+
+        <section className={styles.twoColumn}>
+          <div className={styles.section}><div className={styles.sectionHeading}><p>03 / Education</p></div><div className={styles.education}><article><span>2021 — 2025</span><h3>Bachelor of Science in Software Engineering</h3><p>Makerere University, Kampala, Uganda</p></article></div></div>
+          <div className={styles.section}><div className={styles.sectionHeading}><p>04 / Skills</p></div><div className={styles.skills}>{resumeSkills.map(([title, list]) => <article key={title}><h3>{title}</h3><p>{list}</p></article>)}</div></div>
+        </section>
+
+        <section className={styles.section}>
+          <div className={styles.sectionHeading}><p>05 / Selected systems</p><Link href="/#projects">View full portfolio ↗</Link></div>
+          <div className={styles.projects}>{resumeProjects.map((project) => <article key={project.name}><div className={styles.projectTop}><i className={project.icon} aria-hidden="true" />{project.liveUrl && <a href={project.liveUrl} target="_blank" rel="noreferrer" aria-label={`Visit ${project.name}`}><i className="ri-arrow-right-up-line" aria-hidden="true" /></a>}</div><h3>{project.name}</h3><p>{project.text}</p><ul>{project.technologies.map((technology) => {
+            const icon = technologyIcons[technology as keyof typeof technologyIcons];
+            return <li key={technology}>{icon ? <svg viewBox="0 0 24 24" aria-hidden="true"><path d={icon.path} /></svg> : <i className={technologyFallbackIcons[technology] ?? "ri-code-line"} aria-hidden="true" />}<span>{technology}</span></li>;
+          })}</ul>{project.liveUrl && <a className={styles.projectLink} href={project.liveUrl} target="_blank" rel="noreferrer">Live project <span aria-hidden="true">↗</span></a>}</article>)}</div>
+        </section>
+
+        <footer className={styles.resumeFooter}><span>Nansera Ena · Software Developer</span><a href="mailto:enanansera311@gmail.com">Get in touch ↗</a></footer>
+      </article>
+    </main>
+  );
+}
